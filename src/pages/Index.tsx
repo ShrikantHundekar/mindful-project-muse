@@ -1,13 +1,39 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/layout/AppSidebar";
+import KanbanBoard from "@/components/kanban/KanbanBoard";
+import AIChatPanel from "@/components/chat/AIChatPanel";
+import { useTasks } from "@/hooks/useTasks";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+  const { session, loading: authLoading } = useAuth();
+  const { tasks } = useTasks();
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    </div>
+    );
+  }
+
+  if (!session) return <Navigate to="/auth" replace />;
+
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <main className="flex flex-1 flex-col overflow-hidden p-6">
+          <div className="mb-2 flex items-center md:hidden">
+            <SidebarTrigger />
+          </div>
+          <KanbanBoard />
+        </main>
+        <AIChatPanel tasks={tasks} />
+      </div>
+    </SidebarProvider>
   );
 };
 
