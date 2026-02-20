@@ -1,15 +1,15 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import AppSidebar from "@/components/layout/AppSidebar";
-import KanbanBoard from "@/components/kanban/KanbanBoard";
-import AIChatPanel from "@/components/chat/AIChatPanel";
-import { useTasks } from "@/hooks/useTasks";
+import BoardSidebar from "@/components/board/BoardSidebar";
+import Board from "@/components/board/Board";
+import BoardChatPanel from "@/components/board/BoardChatPanel";
+import { useBoardTasks } from "@/components/board/useBoardTasks";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const { session, loading: authLoading } = useAuth();
-  const { tasks } = useTasks();
+  const { tasks } = useBoardTasks();
 
   if (authLoading) {
     return (
@@ -24,14 +24,14 @@ const Index = () => {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-accent/10 to-primary/5">
-        <AppSidebar />
+        <BoardSidebar />
         <main className="flex flex-1 flex-col overflow-hidden p-6">
           <div className="mb-2 flex items-center md:hidden">
             <SidebarTrigger />
           </div>
-          <KanbanBoard />
+          <Board />
         </main>
-        <AIChatPanel tasks={tasks} />
+        <BoardChatPanel tasks={tasks} />
       </div>
     </SidebarProvider>
   );
