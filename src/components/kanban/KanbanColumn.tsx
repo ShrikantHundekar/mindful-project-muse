@@ -15,26 +15,45 @@ interface KanbanColumnProps {
   onEditTask: (task: Task) => void;
 }
 
+const COLUMN_STYLES: Record<TaskStatus, { gradient: string; dot: string; badge: string }> = {
+  todo: {
+    gradient: "from-primary/5 to-primary/10",
+    dot: "bg-primary",
+    badge: "bg-primary/15 text-primary",
+  },
+  in_progress: {
+    gradient: "from-warning/5 to-warning/10",
+    dot: "bg-warning",
+    badge: "bg-warning/15 text-warning-foreground",
+  },
+  completed: {
+    gradient: "from-success/5 to-success/10",
+    dot: "bg-success",
+    badge: "bg-success/15 text-success-foreground",
+  },
+};
+
 const KanbanColumn = ({ id, label, colorVar, tasks, onAddTask, onEditTask }: KanbanColumnProps) => {
   const { setNodeRef, isOver } = useDroppable({ id });
+  const styles = COLUMN_STYLES[id];
 
   return (
     <div
       ref={setNodeRef}
-      className={`flex min-h-[400px] flex-1 flex-col rounded-2xl bg-secondary/50 p-4 transition-colors ${isOver ? "bg-accent/60 ring-2 ring-primary/20" : ""}`}
+      className={`flex min-h-[400px] flex-1 flex-col rounded-2xl bg-gradient-to-b ${styles.gradient} border border-border/40 p-4 transition-all ${isOver ? "ring-2 ring-primary/30 scale-[1.01]" : ""}`}
     >
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className={`h-2.5 w-2.5 rounded-full bg-${colorVar}`} />
+          <div className={`h-3 w-3 rounded-full ${styles.dot} shadow-sm`} />
           <h3 className="font-display text-sm font-semibold">{label}</h3>
-          <Badge variant="secondary" className="ml-1 h-5 min-w-[20px] justify-center rounded-full px-1.5 text-xs">
+          <Badge className={`ml-1 h-5 min-w-[20px] justify-center rounded-full border-0 px-1.5 text-xs font-bold ${styles.badge}`}>
             {tasks.length}
           </Badge>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 rounded-lg"
+          className="h-7 w-7 rounded-lg hover:bg-primary/10"
           onClick={() => onAddTask(id)}
         >
           <Plus className="h-4 w-4" />

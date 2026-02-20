@@ -5,7 +5,7 @@ import { useTasks } from "@/hooks/useTasks";
 import KanbanColumn from "./KanbanColumn";
 import TaskDialog from "./TaskDialog";
 import { Button } from "@/components/ui/button";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, Sparkles } from "lucide-react";
 
 const KanbanBoard = () => {
   const { tasks, loading, addTask, updateTask, deleteTask, moveTask, getTasksByStatus } = useTasks();
@@ -25,14 +25,12 @@ const KanbanBoard = () => {
       const taskId = active.id as string;
       const overId = over.id as string;
 
-      // Dropped on a column
       const isColumn = COLUMNS.some((c) => c.id === overId);
       if (isColumn) {
         moveTask(taskId, overId as TaskStatus);
         return;
       }
 
-      // Dropped on another task — find that task's status
       const overTask = tasks.find((t) => t.id === overId);
       if (overTask && overTask.id !== taskId) {
         moveTask(taskId, overTask.status);
@@ -72,10 +70,13 @@ const KanbanBoard = () => {
     <>
       <div className="flex items-center justify-between pb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold">My Board</h1>
+          <h1 className="font-display text-2xl font-bold flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            My Board
+          </h1>
           <p className="text-sm text-muted-foreground">{tasks.length} tasks total</p>
         </div>
-        <Button onClick={() => handleAddTask("todo")} className="rounded-xl">
+        <Button onClick={() => handleAddTask("todo")} className="rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all">
           <Plus className="mr-2 h-4 w-4" /> Add Task
         </Button>
       </div>
