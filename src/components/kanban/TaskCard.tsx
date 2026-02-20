@@ -11,6 +11,12 @@ interface TaskCardProps {
   onClick: () => void;
 }
 
+const PRIORITY_STYLES: Record<string, string> = {
+  high: "bg-destructive/10 text-destructive border-destructive/20",
+  medium: "bg-warning/10 text-warning-foreground border-warning/20",
+  low: "bg-success/10 text-success-foreground border-success/20",
+};
+
 const TaskCard = ({ task, onClick }: TaskCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
@@ -30,7 +36,7 @@ const TaskCard = ({ task, onClick }: TaskCardProps) => {
       style={style}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: isDragging ? 0.5 : 1, y: 0 }}
-      className={`group cursor-pointer rounded-xl border bg-card p-4 shadow-sm transition-all hover:shadow-md ${isDragging ? "z-50 shadow-lg ring-2 ring-primary/20" : ""}`}
+      className={`group cursor-pointer rounded-xl border bg-card p-4 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 ${isDragging ? "z-50 shadow-lg ring-2 ring-primary/20" : ""}`}
       onClick={onClick}
     >
       <div className="flex items-start gap-2">
@@ -44,7 +50,7 @@ const TaskCard = ({ task, onClick }: TaskCardProps) => {
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex items-start justify-between gap-2">
             <h4 className="font-medium leading-snug">{task.title}</h4>
-            <Badge variant="secondary" className={`shrink-0 text-xs ${priority.className}`}>
+            <Badge variant="outline" className={`shrink-0 text-xs border ${PRIORITY_STYLES[task.priority] || ""}`}>
               {priority.label}
             </Badge>
           </div>
@@ -54,7 +60,7 @@ const TaskCard = ({ task, onClick }: TaskCardProps) => {
           )}
 
           {task.category && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs bg-accent/50">
               {task.category}
             </Badge>
           )}
@@ -62,13 +68,13 @@ const TaskCard = ({ task, onClick }: TaskCardProps) => {
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             {task.due_date && (
               <span className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
+                <Calendar className="h-3 w-3 text-primary" />
                 {format(new Date(task.due_date), "MMM d")}
               </span>
             )}
             {task.time_estimate != null && task.time_estimate > 0 && (
               <span className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
+                <Clock className="h-3 w-3 text-primary" />
                 {task.time_estimate}h
               </span>
             )}
